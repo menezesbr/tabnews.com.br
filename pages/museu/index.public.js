@@ -5,18 +5,18 @@ export default function Page() {
     <DefaultLayout
       metadata={{
         title: 'Museu',
-        description: 'Esta página é humilde, porém traz coisas muito importantes da história do Tabnews.',
+        description: 'Esta página é humilde, porém traz coisas muito importantes da história do TabNews.',
       }}>
       <Box>
         <Text as="h1">Museu TabNews</Text>
         <Text as="p">
-          Esta página é humilde, porém traz coisas <strong>muito importantes</strong> da história do Tabnews.
+          Esta página é humilde, porém traz coisas <strong>muito importantes</strong> da história do TabNews.
         </Text>
         <Text as="p">
           Então abaixo listamos as primeiras interfaces que o projeto teve, incluindo algumas Provas de Conceito (POC).
         </Text>
 
-        <ul className="list">
+        <Box as="ul" sx={{ listStyle: 'circle' }}>
           <li>
             <PrimerLink href="/museu/init.html">Primeira Home Oficial (Init)</PrimerLink> feito pelos Membros da Turma
           </li>
@@ -88,23 +88,19 @@ export default function Page() {
             <PrimerLink href="/museu/post-02.html">Post POC #02</PrimerLink> feito por{' '}
             <PrimerLink href="https://github.com/pscruzzz">Pedro Cruz</PrimerLink>
           </li>
-        </ul>
+        </Box>
 
-        <Text as="p">Abaixo temos um artigo que fala as principais mudanças do TabNews desde o início do projeto.</Text>
-        <ul>
+        <Text as="p">
+          Abaixo temos um artigo que fala as principais mudanças do TabNews, do início do projeto ao lançamento oficial.
+        </Text>
+        <Box as="ul" sx={{ listStyle: 'circle' }}>
           <li>
-            <Link href="/museu/evolution-of-tabnews.html">A Evolução do TabNews</Link> feito por{' '}
-            <Link href="https://github.com/gabrielsozinho">Gabriel Sozinho</Link>
+            <PrimerLink href="/museu/evolucao-do-tabnews">
+              A Evolução do TabNews — da Concepção ao Lançamento
+            </PrimerLink>
           </li>
-        </ul>
+        </Box>
       </Box>
-
-      <style jsx>{`
-        .list {
-          margin-top: 2rem;
-          list-style: circle;
-        }
-      `}</style>
     </DefaultLayout>
   );
 }
