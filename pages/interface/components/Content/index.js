@@ -24,7 +24,7 @@ import {
 import { KebabHorizontalIcon, LinkIcon, PencilIcon, TrashIcon } from '@/TabNewsUI/icons';
 import { useUser } from 'pages/interface';
 
-export default function Content({ content, mode = 'view', viewFrame = false }) {
+export default function Content({ content, mode = 'view', isPageRoot, viewFrame = false }) {
   const [componentMode, setComponentMode] = useState(mode);
   const [contentObject, setContentObject] = useState(content);
   const { user } = useUser();
@@ -59,7 +59,14 @@ export default function Content({ content, mode = 'view', viewFrame = false }) {
   }, [localStorageKey, user, contentObject]);
 
   if (componentMode === 'view') {
-    return <ViewMode setComponentMode={setComponentMode} contentObject={contentObject} viewFrame={viewFrame} />;
+    return (
+      <ViewMode
+        setComponentMode={setComponentMode}
+        contentObject={contentObject}
+        isPageRoot={isPageRoot}
+        viewFrame={viewFrame}
+      />
+    );
   } else if (componentMode === 'compact') {
     return <CompactMode setComponentMode={setComponentMode} contentObject={contentObject} />;
   } else if (componentMode === 'edit') {
@@ -109,7 +116,7 @@ function ViewModeOptionsMenu({ onDelete, onComponentModeChange }) {
   );
 }
 
-function ViewMode({ setComponentMode, contentObject, viewFrame }) {
+function ViewMode({ setComponentMode, contentObject, isPageRoot, viewFrame }) {
   const { user, fetchUser } = useUser();
   const [globalErrorMessage, setGlobalErrorMessage] = useState(null);
   const confirm = useConfirm();
@@ -158,6 +165,7 @@ function ViewMode({ setComponentMode, contentObject, viewFrame }) {
 
   return (
     <Box
+      as={viewFrame ? 'article' : undefined}
       sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -188,9 +196,11 @@ function ViewMode({ setComponentMode, contentObject, viewFrame }) {
               mt: '2px',
               color: 'fg.muted',
             }}>
-            <BranchName as={Link} href={`/${contentObject.owner_username}`}>
-              {contentObject.owner_username}
-            </BranchName>
+            <Text as={isPageRoot ? 'address' : undefined} sx={{ fontStyle: isPageRoot ? 'normal' : undefined }}>
+              <BranchName as={Link} href={`/${contentObject.owner_username}`}>
+                {contentObject.owner_username}
+              </BranchName>
+            </Text>
             {!contentObject.parent_id && (
               <>
                 <ReadTime text={contentObject.body} />
@@ -436,13 +446,13 @@ function EditMode({ contentObject, setContentObject, setComponentMode, localStor
 
   return (
     <Box sx={{ mb: 4, width: '100%' }}>
-      <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+      <form onSubmit={handleSubmit} style={{ width: '100%' }} noValidate>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           {globalErrorMessage && <Flash variant="danger">{globalErrorMessage}</Flash>}
 
           {!contentObject?.parent_id && (
-            <FormControl id="title">
-              <FormControl.Label visuallyHidden>Título</FormControl.Label>
+            <FormControl id="title" required>
+              <FormControl.Label>Título</FormControl.Label>
               <TextInput
                 contrast
                 sx={{ px: 2, '&:focus-within': { backgroundColor: 'canvas.default' } }}
@@ -453,8 +463,7 @@ function EditMode({ contentObject, setContentObject, setComponentMode, localStor
                 autoCorrect="off"
                 autoCapitalize="off"
                 spellCheck={false}
-                placeholder="Título"
-                aria-label="Título"
+                placeholder="e.g. Desafios que tive no meu primeiro ano empreendendo com software"
                 // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus={true}
                 block={true}
@@ -467,8 +476,8 @@ function EditMode({ contentObject, setContentObject, setComponentMode, localStor
             </FormControl>
           )}
 
-          <FormControl id="body">
-            <FormControl.Label visuallyHidden>Corpo</FormControl.Label>
+          <FormControl id="body" required={!contentObject?.parent_id}>
+            <FormControl.Label>Corpo</FormControl.Label>
             <Editor
               isValid={errorObject?.key === 'body'}
               value={newData.body}
@@ -484,7 +493,7 @@ function EditMode({ contentObject, setContentObject, setComponentMode, localStor
 
           {!contentObject?.parent_id && (
             <FormControl id="source_url">
-              <FormControl.Label visuallyHidden>Fonte (opcional)</FormControl.Label>
+              <FormControl.Label>Fonte</FormControl.Label>
               <TextInput
                 contrast
                 sx={{ px: 2, '&:focus-within': { backgroundColor: 'canvas.default' } }}
@@ -495,8 +504,7 @@ function EditMode({ contentObject, setContentObject, setComponentMode, localStor
                 autoCorrect="off"
                 autoCapitalize="off"
                 spellCheck={false}
-                placeholder="Fonte (opcional)"
-                aria-label="Fonte (opcional)"
+                placeholder="https://origem.site/noticia"
                 block={true}
                 value={newData.source_url}
               />
@@ -505,6 +513,10 @@ function EditMode({ contentObject, setContentObject, setComponentMode, localStor
                 <FormControl.Validation variant="error">{errorObject.message}</FormControl.Validation>
               )}
             </FormControl>
+          )}
+
+          {!contentObject?.parent_id && (
+            <Text sx={{ fontSize: 1 }}>Os campos marcados com um asterisco (*) são obrigatórios.</Text>
           )}
 
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>

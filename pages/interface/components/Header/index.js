@@ -47,31 +47,28 @@ export default function HeaderComponent() {
   };
 
   return (
-    <PrimerHeader
-      id="header"
-      sx={{
-        minWidth: 'max-content',
-        px: [2, null, null, 3],
-      }}>
+    <PrimerHeader as="header" id="header" sx={{ px: [2, null, null, 3] }}>
       <SearchBoxOverlay />
-      <PrimerHeader.Item>
-        <HeaderLink href="/" aria-label="Voltar para a página inicial">
-          <CgTab size={32} />
-          <Box sx={{ ml: 2, display: ['none', 'block'] }}>TabNews</Box>
-        </HeaderLink>
-      </PrimerHeader.Item>
+      <Box as="ul" sx={{ display: 'flex', flex: 1, margin: 0, padding: 0 }}>
+        <PrimerHeader.Item as="li" sx={{ listStyle: 'none' }}>
+          <HeaderLink href="/" aria-label="Voltar para a página inicial">
+            <CgTab size={32} />
+            <Box sx={{ ml: 2, display: ['none', 'block'] }}>TabNews</Box>
+          </HeaderLink>
+        </PrimerHeader.Item>
 
-      <PrimerHeader.Item>
-        <HeaderLink href="/" sx={asPath === '/' || asPath.startsWith('/pagina') ? activeLinkStyle : undefined}>
-          Relevantes
-        </HeaderLink>
-      </PrimerHeader.Item>
+        <PrimerHeader.Item as="li" sx={{ listStyle: 'none' }}>
+          <HeaderLink href="/" sx={asPath === '/' || asPath.startsWith('/pagina') ? activeLinkStyle : undefined}>
+            Relevantes
+          </HeaderLink>
+        </PrimerHeader.Item>
 
-      <PrimerHeader.Item full sx={{ mr: 0 }}>
-        <HeaderLink href="/recentes" sx={asPath.startsWith('/recentes') ? activeLinkStyle : undefined}>
-          Recentes
-        </HeaderLink>
-      </PrimerHeader.Item>
+        <PrimerHeader.Item as="li" full sx={{ listStyle: 'none', mr: 0 }}>
+          <HeaderLink href="/recentes" sx={asPath.startsWith('/recentes') ? activeLinkStyle : undefined}>
+            Recentes
+          </HeaderLink>
+        </PrimerHeader.Item>
+      </Box>
 
       {!isLoading && (
         <PrimerHeader.Item

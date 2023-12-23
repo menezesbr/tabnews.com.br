@@ -1,12 +1,13 @@
 import { Box, Footer, GoToTopButton, Header } from '@/TabNewsUI';
 import { Head } from 'pages/interface';
 
-export default function DefaultLayout({ children, containerWidth = 'large', metadata }) {
+export default function DefaultLayout({ as = 'main', children, containerWidth = 'large', metadata }) {
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: 'canvas.default' }}>
       {metadata && <Head metadata={metadata} />}
       <Header />
       <Box
+        as={as}
         maxWidth={containerWidth}
         sx={{
           marginX: 'auto',

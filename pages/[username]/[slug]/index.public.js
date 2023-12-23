@@ -29,14 +29,10 @@ export default function Post({ contentFound, rootContentFound, parentContentFoun
   return (
     <>
       {showConfetti && <Confetti />}
-      <DefaultLayout metadata={contentMetadata}>
+      <DefaultLayout as="article" metadata={contentMetadata}>
         <InReplyToLinks content={contentFound} parentContent={parentContentFound} rootContent={rootContentFound} />
 
-        <Box
-          sx={{
-            width: '100%',
-            display: 'flex',
-          }}>
+        <Box sx={{ width: '100%', display: 'flex' }}>
           <Box
             sx={{
               pr: 2,
@@ -58,7 +54,7 @@ export default function Post({ contentFound, rootContentFound, parentContentFoun
           </Box>
 
           <Box sx={{ width: '100%', pl: '1px', overflow: 'auto' }}>
-            <Content key={contentFound.id} content={contentFound} mode="view" />
+            <Content key={contentFound.id} content={contentFound} isPageRoot mode="view" />
           </Box>
         </Box>
 
@@ -188,6 +184,7 @@ function RenderChildrenTree({ childrenList, renderIntent, renderIncrement }) {
 
     return !renderIntent && !renderShowMore ? null : (
       <Box
+        as={renderIntent ? 'article' : undefined}
         sx={{
           width: '100%',
           wordWrap: 'break-word',
