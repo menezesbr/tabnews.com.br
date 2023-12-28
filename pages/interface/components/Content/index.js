@@ -13,18 +13,21 @@ import {
   FormControl,
   Heading,
   IconButton,
+  Label,
+  LabelGroup,
   Link,
   PastTime,
   ReadTime,
   Text,
   TextInput,
+  Tooltip,
   useConfirm,
   Viewer,
 } from '@/TabNewsUI';
 import { KebabHorizontalIcon, LinkIcon, PencilIcon, TrashIcon } from '@/TabNewsUI/icons';
 import { useUser } from 'pages/interface';
 
-export default function Content({ content, mode = 'view', viewFrame = false }) {
+export default function Content({ content, isPageRootOwner, mode = 'view', viewFrame = false }) {
   const [componentMode, setComponentMode] = useState(mode);
   const [contentObject, setContentObject] = useState(content);
   const { user } = useUser();
@@ -59,7 +62,14 @@ export default function Content({ content, mode = 'view', viewFrame = false }) {
   }, [localStorageKey, user, contentObject]);
 
   if (componentMode === 'view') {
-    return <ViewMode setComponentMode={setComponentMode} contentObject={contentObject} viewFrame={viewFrame} />;
+    return (
+      <ViewMode
+        setComponentMode={setComponentMode}
+        contentObject={contentObject}
+        isPageRootOwner={isPageRootOwner}
+        viewFrame={viewFrame}
+      />
+    );
   } else if (componentMode === 'compact') {
     return <CompactMode setComponentMode={setComponentMode} contentObject={contentObject} />;
   } else if (componentMode === 'edit') {
@@ -78,38 +88,32 @@ export default function Content({ content, mode = 'view', viewFrame = false }) {
 
 function ViewModeOptionsMenu({ onDelete, onComponentModeChange }) {
   return (
-    <Box sx={{ position: 'relative' }}>
-      <Box sx={{ position: 'absolute', right: 0 }}>
-        {/* I've wrapped ActionMenu with this additional divs, to stop content from vertically
-          flickering after this menu appears */}
-        <ActionMenu>
-          <ActionMenu.Anchor>
-            <IconButton size="small" icon={KebabHorizontalIcon} aria-label="Editar conteúdo" />
-          </ActionMenu.Anchor>
+    <ActionMenu>
+      <ActionMenu.Anchor>
+        <IconButton size="small" icon={KebabHorizontalIcon} aria-label="Editar conteúdo" />
+      </ActionMenu.Anchor>
 
-          <ActionMenu.Overlay>
-            <ActionList>
-              <ActionList.Item onClick={() => onComponentModeChange('edit')}>
-                <ActionList.LeadingVisual>
-                  <PencilIcon />
-                </ActionList.LeadingVisual>
-                Editar
-              </ActionList.Item>
-              <ActionList.Item variant="danger" onClick={onDelete}>
-                <ActionList.LeadingVisual>
-                  <TrashIcon />
-                </ActionList.LeadingVisual>
-                Apagar
-              </ActionList.Item>
-            </ActionList>
-          </ActionMenu.Overlay>
-        </ActionMenu>
-      </Box>
-    </Box>
+      <ActionMenu.Overlay>
+        <ActionList>
+          <ActionList.Item onClick={() => onComponentModeChange('edit')}>
+            <ActionList.LeadingVisual>
+              <PencilIcon />
+            </ActionList.LeadingVisual>
+            Editar
+          </ActionList.Item>
+          <ActionList.Item variant="danger" onClick={onDelete}>
+            <ActionList.LeadingVisual>
+              <TrashIcon />
+            </ActionList.LeadingVisual>
+            Apagar
+          </ActionList.Item>
+        </ActionList>
+      </ActionMenu.Overlay>
+    </ActionMenu>
   );
 }
 
-function ViewMode({ setComponentMode, contentObject, viewFrame }) {
+function ViewMode({ setComponentMode, contentObject, isPageRootOwner, viewFrame }) {
   const { user, fetchUser } = useUser();
   const [globalErrorMessage, setGlobalErrorMessage] = useState(null);
   const confirm = useConfirm();
@@ -191,6 +195,13 @@ function ViewMode({ setComponentMode, contentObject, viewFrame }) {
             <BranchName as={Link} href={`/${contentObject.owner_username}`}>
               {contentObject.owner_username}
             </BranchName>
+            {isPageRootOwner && (
+              <LabelGroup sx={{ overflow: 'inherit' }}>
+                <Tooltip aria-label="Autor da publicação principal da página" direction="n">
+                  <Label>Autor</Label>
+                </Tooltip>
+              </LabelGroup>
+            )}
             {!contentObject.parent_id && (
               <>
                 <ReadTime text={contentObject.body} />
@@ -201,7 +212,7 @@ function ViewMode({ setComponentMode, contentObject, viewFrame }) {
               href={`/${contentObject.owner_username}/${contentObject.slug}`}
               prefetch={false}
               sx={{ fontSize: 0, color: 'fg.muted', mr: '100px', py: '2px', height: '22px' }}>
-              <PastTime direction="n" date={contentObject.published_at} sx={{ position: 'absolute' }} />
+              <PastTime direction="n" date={contentObject.published_at} />
             </Link>
           </Box>
           {(user?.id === contentObject.owner_id || user?.features?.includes('update:content:others')) && (
