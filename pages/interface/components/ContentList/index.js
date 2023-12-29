@@ -10,7 +10,16 @@ export default function ContentList({ contentList: list, pagination, paginationB
   return (
     <>
       {list.length > 0 ? (
-        <Box as="ol" sx={{ display: 'grid', gap: '0.5rem' }} start={listNumberStart}>
+        <Box
+          as="ol"
+          sx={{
+            display: 'grid',
+            gap: '0.5rem',
+            gridTemplateColumns: 'min-content minmax(0, 1fr)',
+            padding: 0,
+            margin: 0,
+          }}
+          start={listNumberStart}>
           <RenderItems />
           <EndOfRelevant />
         </Box>
@@ -68,7 +77,19 @@ export default function ContentList({ contentList: list, pagination, paginationB
 
     return list.map((contentObject) => {
       return (
-        <Box key={contentObject.id} as="li">
+        <Box
+          key={contentObject.id}
+          as="li"
+          sx={{
+            display: 'contents',
+            ':before': {
+              content: 'counter(list-item) "."',
+              counterIncrement: 'list-item',
+              fontWeight: 'semibold',
+              width: 'min-content',
+              marginLeft: 'auto',
+            },
+          }}>
           <Box as="article">
             <Box
               sx={{
@@ -138,7 +159,7 @@ export default function ContentList({ contentList: list, pagination, paginationB
   function EndOfRelevant() {
     if (paginationBasePath == '/pagina' && !pagination.nextPage) {
       return (
-        <Box key="end-of-relevant">
+        <Box key="end-of-relevant" sx={{ gridColumnStart: 2 }}>
           <Link sx={{ wordWrap: 'break-word' }} href={'/recentes'}>
             <Box
               sx={{

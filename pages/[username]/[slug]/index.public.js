@@ -54,7 +54,7 @@ export default function Post({ contentFound, rootContentFound, parentContentFoun
           </Box>
 
           <Box sx={{ width: '100%', pl: '1px', overflow: 'auto' }}>
-            <Content key={contentFound.id} content={contentFound} isPageRoot mode="view" />
+            <Content key={contentFound.id} content={contentFound} mode="view" />
           </Box>
         </Box>
 
@@ -184,7 +184,6 @@ function RenderChildrenTree({ childrenList, renderIntent, renderIncrement }) {
 
     return !renderIntent && !renderShowMore ? null : (
       <Box
-        as={renderIntent ? 'article' : undefined}
         sx={{
           width: '100%',
           wordWrap: 'break-word',
@@ -252,7 +251,7 @@ function RenderChildrenTree({ childrenList, renderIntent, renderIncrement }) {
               </Tooltip>
             </Box>
 
-            <Box sx={{ width: '100%', pl: '1px', overflow: 'auto' }}>
+            <Box as={renderIntent ? 'article' : undefined} sx={{ width: '100%', pl: '1px', overflow: 'auto' }}>
               <Content content={child} mode="view" />
 
               <Box sx={{ mt: 4 }}>

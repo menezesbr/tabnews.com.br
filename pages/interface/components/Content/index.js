@@ -24,7 +24,7 @@ import {
 import { KebabHorizontalIcon, LinkIcon, PencilIcon, TrashIcon } from '@/TabNewsUI/icons';
 import { useUser } from 'pages/interface';
 
-export default function Content({ content, mode = 'view', isPageRoot, viewFrame = false }) {
+export default function Content({ content, mode = 'view', viewFrame = false }) {
   const [componentMode, setComponentMode] = useState(mode);
   const [contentObject, setContentObject] = useState(content);
   const { user } = useUser();
@@ -59,14 +59,7 @@ export default function Content({ content, mode = 'view', isPageRoot, viewFrame 
   }, [localStorageKey, user, contentObject]);
 
   if (componentMode === 'view') {
-    return (
-      <ViewMode
-        setComponentMode={setComponentMode}
-        contentObject={contentObject}
-        isPageRoot={isPageRoot}
-        viewFrame={viewFrame}
-      />
-    );
+    return <ViewMode setComponentMode={setComponentMode} contentObject={contentObject} viewFrame={viewFrame} />;
   } else if (componentMode === 'compact') {
     return <CompactMode setComponentMode={setComponentMode} contentObject={contentObject} />;
   } else if (componentMode === 'edit') {
@@ -116,7 +109,7 @@ function ViewModeOptionsMenu({ onDelete, onComponentModeChange }) {
   );
 }
 
-function ViewMode({ setComponentMode, contentObject, isPageRoot, viewFrame }) {
+function ViewMode({ setComponentMode, contentObject, viewFrame }) {
   const { user, fetchUser } = useUser();
   const [globalErrorMessage, setGlobalErrorMessage] = useState(null);
   const confirm = useConfirm();
@@ -163,6 +156,7 @@ function ViewMode({ setComponentMode, contentObject, isPageRoot, viewFrame }) {
     }
   };
 
+  const isRootContent = contentObject.parent_id === null;
   return (
     <Box
       as={viewFrame ? 'article' : undefined}
@@ -196,11 +190,9 @@ function ViewMode({ setComponentMode, contentObject, isPageRoot, viewFrame }) {
               mt: '2px',
               color: 'fg.muted',
             }}>
-            <Text as={isPageRoot ? 'address' : undefined} sx={{ fontStyle: isPageRoot ? 'normal' : undefined }}>
-              <BranchName as={Link} href={`/${contentObject.owner_username}`}>
-                {contentObject.owner_username}
-              </BranchName>
-            </Text>
+            <BranchName as={isRootContent ? 'address' : 'div'} sx={{ fontStyle: 'normal' }}>
+              <Link href={`/${contentObject.owner_username}`}>{contentObject.owner_username}</Link>
+            </BranchName>
             {!contentObject.parent_id && (
               <>
                 <ReadTime text={contentObject.body} />
@@ -210,7 +202,7 @@ function ViewMode({ setComponentMode, contentObject, isPageRoot, viewFrame }) {
             <Link
               href={`/${contentObject.owner_username}/${contentObject.slug}`}
               prefetch={false}
-              sx={{ fontSize: 0, color: 'fg.muted', mr: '100px', py: '2px', height: '22px' }}>
+              sx={{ fontSize: 0, color: 'fg.muted', mr: '100px', py: '1px', height: '22px' }}>
               <PastTime direction="n" date={contentObject.published_at} sx={{ position: 'absolute' }} />
             </Link>
           </Box>
@@ -477,7 +469,7 @@ function EditMode({ contentObject, setContentObject, setComponentMode, localStor
           )}
 
           <FormControl id="body" required={!contentObject?.parent_id}>
-            <FormControl.Label>Corpo</FormControl.Label>
+            <FormControl.Label>{contentObject?.parent_id ? 'Seu comentário' : 'Corpo da publicação'}</FormControl.Label>
             <Editor
               isValid={errorObject?.key === 'body'}
               value={newData.body}
