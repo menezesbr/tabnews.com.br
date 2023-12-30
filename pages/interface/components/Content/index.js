@@ -156,10 +156,9 @@ function ViewMode({ setComponentMode, contentObject, viewFrame }) {
     }
   };
 
-  const isRootContent = contentObject.parent_id === null;
   return (
     <Box
-      as={viewFrame ? 'article' : undefined}
+      as="article"
       sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -190,7 +189,7 @@ function ViewMode({ setComponentMode, contentObject, viewFrame }) {
               mt: '2px',
               color: 'fg.muted',
             }}>
-            <BranchName as={isRootContent ? 'address' : 'div'} sx={{ fontStyle: 'normal' }}>
+            <BranchName as="address" sx={{ fontStyle: 'normal' }}>
               <Link href={`/${contentObject.owner_username}`}>{contentObject.owner_username}</Link>
             </BranchName>
             {!contentObject.parent_id && (

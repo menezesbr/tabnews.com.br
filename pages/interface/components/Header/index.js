@@ -47,7 +47,7 @@ export default function HeaderComponent() {
   };
 
   return (
-    <PrimerHeader as="header" id="header" sx={{ px: [2, null, null, 3] }}>
+    <PrimerHeader as="header" id="header" sx={{ minWidth: 'max-content', px: [2, null, null, 3] }}>
       <SearchBoxOverlay />
       <Box as="nav" sx={{ width: '100%' }}>
         <Box as="ul" sx={{ display: 'flex', flex: 1, margin: 0, padding: 0 }}>

@@ -29,7 +29,7 @@ export default function Post({ contentFound, rootContentFound, parentContentFoun
   return (
     <>
       {showConfetti && <Confetti />}
-      <DefaultLayout as="article" metadata={contentMetadata}>
+      <DefaultLayout metadata={contentMetadata}>
         <InReplyToLinks content={contentFound} parentContent={parentContentFound} rootContent={rootContentFound} />
 
         <Box sx={{ width: '100%', display: 'flex' }}>
@@ -251,7 +251,7 @@ function RenderChildrenTree({ childrenList, renderIntent, renderIncrement }) {
               </Tooltip>
             </Box>
 
-            <Box as={renderIntent ? 'article' : undefined} sx={{ width: '100%', pl: '1px', overflow: 'auto' }}>
+            <Box sx={{ width: '100%', pl: '1px', overflow: 'auto' }}>
               <Content content={child} mode="view" />
 
               <Box sx={{ mt: 4 }}>
